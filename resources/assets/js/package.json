@@ -1,0 +1,53 @@
+{
+  "name": "juridico",
+  "version": "1.0.0",
+  "description": "juridico",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soujiro27/juridicoV5.git"
+  },
+  "author": "JC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/soujiro27/juridicoV5/issues"
+  },
+  "homepage": "https://github.com/soujiro27/juridicoV5#readme",
+  "dependencies": {
+    "babelify-es6-polyfill": "^1.0.4",
+    "bluebird": "^3.5.1",
+    "ckeditor": "^4.7.3",
+    "co": "^4.6.0",
+    "jquery": "^3.2.1",
+    "jquery-confirm": "^3.3.2",
+    "jquery-ui": "^1.12.1",
+    "jquery-ui-browserify": "^1.11.0-pre-seelio",
+    "jquery.steps": "^1.0.1",
+    "material-ui": "^0.19.4",
+    "tabs": "^0.2.0",
+    "validator": "^9.2.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2016": "^6.24.1",
+    "babelify": "^7.3.0",
+    "babelify-es6-polyfill": "^1.0.4",
+    "browserify": "^14.4.0",
+    "gulp": "^3.9.1",
+    "gulp-pug": "^3.3.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-stylus": "^2.6.0",
+    "gulp-uglify": "^3.0.0",
+    "gulp-watch": "^4.3.11",
+    "mdbootstrap": "^4.4.3",
+    "partialify": "^3.1.6",
+    "pug": "^2.0.0-rc.4",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}

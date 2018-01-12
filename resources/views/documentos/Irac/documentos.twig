@@ -1,0 +1,27 @@
+{% extends 'layoutForm.twig' %}
+{% block title %}
+  <div class="header-irac">
+    <a  href="/SIA/juridico/Irac/{{id}}">Asignar</a>
+    <a href="#!" class="active">Documentos</a>
+  </div>
+{% endblock %}
+
+  {% block btnHeader %}
+      <select class="form-control" id="personal-turnado" data-id="{{ id }}">
+        <option value="">Escoga Personal</option>
+        {% for turno in turnados %}
+        <option value="{{turno.idPuestoJuridico}}">{{turno.saludo}} {{turno.nombre}} {{turno.paterno}} {{turno.materno}}</option>
+        {% endfor %}
+        <option value="0">TODO EL PERSONAL</option>
+      </select>
+{% endblock %}
+
+
+{% block form %}
+    <form id="irac"   data-ruta="Irac">
+      
+    </form>
+   <div class="alert alert-danger" id="errors">
+     
+   </div>
+{% endblock %}

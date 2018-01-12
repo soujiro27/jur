@@ -1,0 +1,182 @@
+@import './bootstrap.min.css'
+@import './font-awesome.css'
+@import './jquery-ui.min.css'
+@import './jquery-ui.structure.min.css'
+@import './jquery-ui.theme.min.css'
+@import './style-dashboard.css'
+@import './../js/node_modules/jquery-confirm/css/jquery-confirm.css'
+
+
+vino=#65140F
+azul=#26bce0
+row = #f1f2f2
+blanco = #fff
+
+header
+    img
+        width: 80%
+    div.logout
+        position relative
+    div.logout-user-name
+        margin-top 15px
+        cursor pointer
+    ul.logout-menu
+        display none
+        position: absolute
+        top 35px
+        left 8px
+        list-style: none
+        background: white
+        width: 250px
+        padding: 6px 5px
+        border 1px solid gray
+        box-shadow: 1px 1px 2px gray
+        li
+            padding 5px
+        li:hover
+            background-color vino 
+            color white
+        a
+            display: block
+        a:hover
+            color white
+    input.notificacion
+        background-color: #ff9933
+        box-shadow: 1px 1px 1px gray 
+
+
+a.btn-add
+    color white !important
+form
+    padding: 10px
+table
+    tr
+        cursor pointer
+form.volantes
+    div.send
+        width: 50%
+        display: block !important
+        margin 20px 0px
+    div.destinatario
+        display: block
+        width: 350px !important
+        margin-top: 20px !important
+        input.destinatario
+            width 100%
+    div.content-auditoria
+        display block !important
+        width 100%
+    div.nombre,div.puesto
+        width 350px
+        label
+            width: 100% !important
+        input
+            width: 100% !important
+    div.Asunto
+        width: 100%
+        textarea
+            width: 100%
+    div.headerVolante,div.bloque1,div.bloque2,div.bloque3,div.bloque4,div.bloque5
+        margin-bottom 20px
+
+
+div#cke_ckeditor
+    width: 96%
+    margin-left: 10px !important
+
+select
+    height 30px !important
+
+input[type="radio"]
+    width: 20px
+    height: 20px
+
+.sa
+    color red !important
+
+div.order
+    position: relative !important
+    form
+        display: none
+        width: 200px
+        position absolute
+        top 30px
+        left 0px
+        background-color: white
+        border: 1px solid #afafaf
+        box-shadow: 2px 2px 2px grey
+        select
+            width 90% !important
+            margin-bottom 15px !important
+
+
+td.cerrado
+    color red
+    text-shadow -1px -1px 3px grey
+
+div.sidebar
+    width: 210px !important
+    ul#nav
+        border:1px solid #ccc
+        margin-top 9px !important
+
+h3.autentification
+    text-shadow: 1px 1px 2px #afafaf
+
+div.tooltip-container
+    width 40%
+    margin: 0 10px
+    position relative
+    i.tooltip-icon
+        width: 30px
+        height 30px
+        background-color: #2c3e50
+        color white
+        text-align: center
+        padding: 10px 5px
+        border-radius: 50%
+        &:hover + div
+            display: block
+        &:hover
+            background-color: white
+            border 1px solid #2c3e50
+            color #2c3e50
+            box-shadow: 2px 2px 2px #afafaf
+    div.tooltip-text-container
+        display none
+        background-color #2c3e50
+        color white
+        padding 3px !important
+        border-radius:  0 10px 10px 0
+        position absolute
+        top 0
+        left 60px
+        box-shadow: 2px 4px 2px #afafaf
+    div.tooltip-text-container:before
+        position absolute
+        top -1px
+        left -45px
+        content ''
+        border-right 25px solid #2c3e50 !important
+        border-left 20px solid transparent !important
+        border-top 20px solid transparent !important
+        border-bottom 15px solid transparent !important
+        
+
+
+div#error-frontend,table#datos-auditoria,table#turnados-auditoria
+    display none
+
+div#errors
+    display none
+    
+div.header-irac
+    display flex
+    a
+        padding 5px
+        margin 0px 10px 0px 0px !important
+        cursor pointer
+    .active
+        border-bottom 2px solid grey
+        box-shadow 2px 2px solid black
+       

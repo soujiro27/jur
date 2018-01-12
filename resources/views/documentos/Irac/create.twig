@@ -1,0 +1,39 @@
+{% extends 'layoutForm.twig' %}
+{% block title %}
+  <div class="header-irac">
+    <a  href="#!" class="active">Asignar</a>
+    <a href="/SIA/juridico/Irac/documentos/{{ id }}">Documentos</a>
+  </div>
+{% endblock %}
+  {% block btnHeader %}
+      <button class="btn btn-primary btn-sm" id="turnar">Asignar</button>
+{% endblock %}
+{% block form %}
+    <form id="irac"   data-ruta="Irac">
+            <input type="hidden" value="{{ id }}" id="idVolante">
+       <div class="table-turnos form-group">
+           <table class="table" id="turnadoJuridico">
+               <thead>
+                   <th>Nombre</th>
+                   <th>Estado</th>
+                   <th>Prioridad</th>
+                   <th>Fecha</th>
+               </thead>
+               <tbody>
+                 {% for turno in turnos %}
+                    <tr data-id="{{ turno.idTurnadoJuridico}}">
+                      <td>{{ turno.saludo }} {{turno.nombre}} {{ turno.paterno }}  {{ turno.materno }}</td>
+                      <td>{{ turno.idEstadoTurnado }}</td>
+                      <td>{{ turno.idTipoPrioridad }}</td>
+                      <td>{{ turno.fAlta }}</td>
+                    </tr>
+                 {% endfor %}
+
+               </tbody>
+           </table>
+       </div>
+    </form>
+   <div class="alert alert-danger" id="errors">
+     
+   </div>
+{% endblock %}
