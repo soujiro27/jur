@@ -58,8 +58,8 @@ module.exports = class modalsIrac {
 					text:'Guardar',
 					btnClass:'btn-primary',
 					action:function(){
-						let input = $('input#uploadFile')
-						let file = input[0].files
+						var inputFileImage = document.getElementById("uploadFile");
+        				var file = inputFileImage.files[0];
 						var data = new FormData()
 						data.append('archivo',file)
 						$.post({

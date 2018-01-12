@@ -40,7 +40,6 @@ $app->group('/juridico',$auth,function() use($app,$controller){
 	});
 
 	$app->post('/api/upload',function() use ($controller,$app){
-		var_dump($_FILES);
 		$controller->upload_files($app->request->get(),$_FILES);
 	});
 

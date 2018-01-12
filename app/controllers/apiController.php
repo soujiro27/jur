@@ -153,6 +153,6 @@ class ApiController {
 
 	public function upload_files($data,$file) {
 		var_dump($data);
-		var_dump($file['arhivo']);
+		var_dump($file);
 	}
 }

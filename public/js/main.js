@@ -376,8 +376,8 @@ module.exports = function () {
 						text: 'Guardar',
 						btnClass: 'btn-primary',
 						action: function action() {
-							var input = $('input#uploadFile');
-							var file = input[0].files;
+							var inputFileImage = document.getElementById("uploadFile");
+							var file = inputFileImage.files[0];
 							var data = new FormData();
 							data.append('archivo', file);
 							$.post({
