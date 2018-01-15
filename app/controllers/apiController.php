@@ -154,8 +154,14 @@ class ApiController {
 	public function upload_files($data,$file) {
 		
 		$directory ='jur/files/documentos/'.$data['idVolante'];
-		echo $directory;
-		mkdir($directory,0777,true);
+		var_dump($file);
+		if(!file_exists($directory)){
+			mkdir($directory,0777,true);
+		} else {
+			move_uploaded_file($file['uploadFile']['tmp_name'],$directory.'/'.$file['uploadFile']['name']);
+		}
+	
+		
 	
 	}
 }
