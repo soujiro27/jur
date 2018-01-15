@@ -45,7 +45,7 @@ module.exports = class modalsIrac {
 		})
 	}
 
-	upload_files(html) {
+	upload_files(html,id) {
 		$.confirm({
 			title: 'Anexar Documento',
 			content : html,
@@ -54,24 +54,11 @@ module.exports = class modalsIrac {
 			columnClass: 'col-md-11 col-md-offset-1',
 			draggable:false,
 			buttons:{
-				confirm:{
+				formSubmit:{
 					text:'Guardar',
 					btnClass:'btn-primary',
 					action:function(){
-						var inputFileImage = document.getElementById("uploadFile");
-        				var file = inputFileImage.files[0];
-						var data = new FormData()
-						data.append('archivo',file)
-						$.post({
-							url:'/SIA/juridico/api/upload',
-							contentType:false,
-							data:data,
-							processData:false,
-							cache:false,
-							success:function(res) {
-								console.log(res)
-							}
-						})
+						funcion.upload_files(id)
 					}
 				},
 				cancel:{

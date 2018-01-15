@@ -49,7 +49,7 @@ module.exports = class Irac {
 			if(!validator.isEmpty(val)) {
 				let promesa = co(function*(){
 					let datos = yield api.load_documentos_turnados(id,val)
-					let tabla = self.construct_tables_documentos(datos)
+					let tabla = self.construct_tables_documentos(datos,id)
 					$('form#irac').html(tabla)
 					self.upload_files()
 				})
@@ -57,16 +57,20 @@ module.exports = class Irac {
 		})
 	}
 
-	construct_tables_documentos(datos) {
+	construct_tables_documentos(datos,id) {
 		let html = require('./table-documentos.html')
 		let tr = ''
 		for(let x in datos) {
 			tr += `<tr><td>${datos[x].archivoFinal}</td><td>${datos[x].fAlta}</td><td>${datos[x].comentario}</td></tr>`
 		}
 
+	
 		let nombre = datos[0].saludo + ' ' + datos[0].nombre + ' ' + datos[0].paterno + ' ' + datos[0].materno
 
-		let res = html.replace(':nombre:',nombre).replace(':documentos:',tr)
+		let res = html.replace(':nombre:',nombre)
+				.replace(':documentos:',tr)
+				.replace(':turnado:',datos[0].idTurnadoJuridico)
+				.replace(':volante:',id)
 
 		return res
 	}
@@ -74,8 +78,11 @@ module.exports = class Irac {
 	upload_files(){
 		$('button#add_document').click(function(e){
 			e.preventDefault()
+			let id = $(this).data('id')
+			let volante = $(this).data('volante')
 			let html = require('./upload-form.html')
-			modal.upload_files(html)
+			html = html.replace(':idTurnado:',id).replace(':idVolante:',volante)
+			modal.upload_files(html,id)
 		})
 	}
 

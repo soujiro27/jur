@@ -92,7 +92,7 @@ class IracController extends Template {
 
     public function createDocumentos($id,$message, $errors) {
 
-        $turnados = TurnadosJuridico::select('p.idPuestoJuridico','p.saludo','p.nombre','p.paterno','p.materno')
+        $turnados = TurnadosJuridico::select('p.idPuestoJuridico','p.saludo','p.nombre','p.paterno','p.materno','sia_TurnadosJuridico.idTurnadoJuridico')
                                     ->join('sia_puestosJuridico as p','idPuestoJuridico','=','sia_TurnadosJuridico.idUsrReceptor')->get();
 
 
@@ -102,7 +102,7 @@ class IracController extends Template {
             'mensaje' => $message,
             'errors' => $errors,
             'id' => $id,
-            'turnados' => $turnados
+            'turnados' => $turnados,
         ]);
     }
 

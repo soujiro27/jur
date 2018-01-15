@@ -259,7 +259,7 @@ module.exports = function () {
 
 									case 2:
 										datos = _context2.sent;
-										tabla = self.construct_tables_documentos(datos);
+										tabla = self.construct_tables_documentos(datos, id);
 
 										$('form#irac').html(tabla);
 										self.upload_files();
@@ -276,7 +276,7 @@ module.exports = function () {
 		}
 	}, {
 		key: 'construct_tables_documentos',
-		value: function construct_tables_documentos(datos) {
+		value: function construct_tables_documentos(datos, id) {
 			var html = require('./table-documentos.html');
 			var tr = '';
 			for (var x in datos) {
@@ -285,7 +285,7 @@ module.exports = function () {
 
 			var nombre = datos[0].saludo + ' ' + datos[0].nombre + ' ' + datos[0].paterno + ' ' + datos[0].materno;
 
-			var res = html.replace(':nombre:', nombre).replace(':documentos:', tr);
+			var res = html.replace(':nombre:', nombre).replace(':documentos:', tr).replace(':turnado:', datos[0].idTurnadoJuridico).replace(':volante:', id);
 
 			return res;
 		}
@@ -294,8 +294,11 @@ module.exports = function () {
 		value: function upload_files() {
 			$('button#add_document').click(function (e) {
 				e.preventDefault();
+				var id = $(this).data('id');
+				var volante = $(this).data('volante');
 				var html = require('./upload-form.html');
-				modal.upload_files(html);
+				html = html.replace(':idTurnado:', id).replace(':idVolante:', volante);
+				modal.upload_files(html, id);
 			});
 		}
 	}]);
@@ -363,7 +366,7 @@ module.exports = function () {
 		}
 	}, {
 		key: 'upload_files',
-		value: function upload_files(html) {
+		value: function upload_files(html, id) {
 			$.confirm({
 				title: 'Anexar Documento',
 				content: html,
@@ -372,24 +375,11 @@ module.exports = function () {
 				columnClass: 'col-md-11 col-md-offset-1',
 				draggable: false,
 				buttons: {
-					confirm: {
+					formSubmit: {
 						text: 'Guardar',
 						btnClass: 'btn-primary',
 						action: function action() {
-							var inputFileImage = document.getElementById("uploadFile");
-							var file = inputFileImage.files[0];
-							var data = new FormData();
-							data.append('archivo', file);
-							$.post({
-								url: '/SIA/juridico/api/upload',
-								contentType: false,
-								data: data,
-								processData: false,
-								cache: false,
-								success: function success(res) {
-									console.log(res);
-								}
-							});
+							funcion.upload_files(id);
 						}
 					},
 					cancel: {
@@ -464,17 +454,31 @@ module.exports = function () {
 			}
 			return tr;
 		}
+	}, {
+		key: 'upload_files',
+		value: function upload_files(id) {
+			var formData = new FormData(document.getElementById("formuploadajax"));
+			$.ajax({
+				url: '/SIA/juridico/api/upload',
+				type: "post",
+				dataType: "html",
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false
+			});
+		}
 	}]);
 
 	return iracFunciones;
 }();
 
 },{"./../api":1,"bluebird":168,"co":169,"jquery":173,"validator":176}],6:[function(require,module,exports){
-module.exports = '<div class="table-documentos">\n	<div class="datos-documentos">\n		<p>:nombre:</p>\n		<button class="btn btn-primary" id="add_document" data-id=":turnado:">Enviar Documento</button>\n	</div>\n\n	<table class="table">\n		<thead>\n			<th>Documento</th>\n			<th>Fecha</th>\n			<th>Comentario</th>\n		</thead>\n		<tbody>\n			:documentos:\n		</tbody>\n	</table>\n</div>';
+module.exports = '<div class="table-documentos">\n	<div class="datos-documentos">\n		<p>:nombre:</p>\n		<button class="btn btn-primary" id="add_document" data-id=":turnado:" data-volante=":volante:">Enviar Documento</button>\n	</div>\n\n	<table class="table">\n		<thead>\n			<th>Documento</th>\n			<th>Fecha</th>\n			<th>Comentario</th>\n		</thead>\n		<tbody>\n			:documentos:\n		</tbody>\n	</table>\n\n	<div id="errors"></div>\n\n</div>';
 },{}],7:[function(require,module,exports){
 module.exports = '<table class="table" id="table-personal">\n	<thead>\n		<th>Seleccionar</th>\n		<th>Nombre</th>\n		<th>Puesto</th>\n	</thead>\n	<tbody>\n		:tr:\n	</tbody>\n</table>\n<div id="observaciones" class="col-lg-11">\n	<textarea placeholder="Agregar una obervaciones" id="comentario"></textarea>\n	<select id="prioridad">\n		<option value="">Escoga una Opcion</option>\n		<option value="NORMAL">Normal</option>\n		<option value="URGENTE">Urgente</option>\n	</select>\n</div>';
 },{}],8:[function(require,module,exports){
-module.exports = '<div class="upload-container">\n	<div class="form-group">\n		<label>Arhivo a Enviar</label>\n		<input type="file" name="uploadFile" id="uploadFile" class="form-control">\n	</div>\n	<div class="form-group">\n		<label>Comentario</label>\n		<textarea placeholder="Añadir Comentario"></textarea>\n	</div>\n</div>';
+module.exports = '<div class="upload-container">\n<form enctype="multipart/form-data" id="formuploadajax" method="post">\n	<div class="form-group">\n		<label>Arhivo a Enviar</label>\n		<input type="file" name="uploadFile" id="uploadFile" class="form-control">\n		<input type="hidden" name="idTurnadoJuridico" value=":idTurnado:">\n		<input type="hidden" name="idVolante" value=":idVolante:">\n	</div>\n	<div class="form-group">\n		<label>Comentario</label>\n		<textarea placeholder="Añadir Comentario" id="coment-file" name="comentario"></textarea>\n	</div>\n</form>\n</div>';
 },{}],9:[function(require,module,exports){
 'use strict';
 

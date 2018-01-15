@@ -152,7 +152,10 @@ class ApiController {
 	}
 
 	public function upload_files($data,$file) {
-		var_dump($data);
-		var_dump($file);
+		
+		$directory ='jur/files/documentos/'.$data['idVolante'];
+		echo $directory;
+		mkdir($directory,0777,true);
+	
 	}
 }

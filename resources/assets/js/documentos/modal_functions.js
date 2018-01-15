@@ -50,4 +50,18 @@ module.exports = class iracFunciones {
 		}
 		return tr
 	}
+
+	upload_files(id) {
+		var formData = new FormData(document.getElementById("formuploadajax"));
+		$.ajax({
+			url: '/SIA/juridico/api/upload',
+			type: "post",
+			dataType: "html",
+			data: formData,
+			cache: false,
+			contentType: false,
+			processData: false
+		})
+		
+	}
 }

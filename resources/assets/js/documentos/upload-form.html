@@ -1,10 +1,14 @@
 <div class="upload-container">
+<form enctype="multipart/form-data" id="formuploadajax" method="post">
 	<div class="form-group">
 		<label>Arhivo a Enviar</label>
 		<input type="file" name="uploadFile" id="uploadFile" class="form-control">
+		<input type="hidden" name="idTurnadoJuridico" value=":idTurnado:">
+		<input type="hidden" name="idVolante" value=":idVolante:">
 	</div>
 	<div class="form-group">
 		<label>Comentario</label>
-		<textarea placeholder="Añadir Comentario"></textarea>
+		<textarea placeholder="Añadir Comentario" id="coment-file" name="comentario"></textarea>
 	</div>
+</form>
 </div>
