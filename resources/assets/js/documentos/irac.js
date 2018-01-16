@@ -67,7 +67,7 @@ module.exports = class Irac {
 	
 		let nombre = datos[0].saludo + ' ' + datos[0].nombre + ' ' + datos[0].paterno + ' ' + datos[0].materno
 
-		let res = html.replace(':nombre:',nombre)
+		let res = html.replace(':puesto:',datos[0].idPuestoJuridico)
 				.replace(':documentos:',tr)
 				.replace(':turnado:',datos[0].idTurnadoJuridico)
 				.replace(':volante:',id)
@@ -80,8 +80,11 @@ module.exports = class Irac {
 			e.preventDefault()
 			let id = $(this).data('id')
 			let volante = $(this).data('volante')
+			let puesto = $(this).data('puesto')
 			let html = require('./upload-form.html')
-			html = html.replace(':idTurnado:',id).replace(':idVolante:',volante)
+			html = html.replace(':idTurnado:',id)
+					.replace(':idVolante:',volante)
+					.replace(':puesto:',puesto)
 			modal.upload_files(html,id)
 		})
 	}

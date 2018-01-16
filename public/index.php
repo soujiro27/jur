@@ -20,6 +20,9 @@ include_once '/../routes/volantes/volantesDiversos.php';
 include_once '/../routes/documentos/irac.php';
 
 
+/*-------Turnados----------------------------*/
+include_once '/../routes/documentos/Turnados.php';
+
 /*------------ Api --------------------------*/
 include_once '/../routes/api/api.php';
 

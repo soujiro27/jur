@@ -4,6 +4,11 @@ const apis = require('./../api')
 const co = require('co')
 const Promise = require('bluebird')
 
+
+const api = new apis()
+
+
+
 module.exports = class iracFunciones {
 
 	save_turnado_irac(id,idPuesto,coment,prioridad) {
@@ -52,6 +57,7 @@ module.exports = class iracFunciones {
 	}
 
 	upload_files(id) {
+		let self = this
 		var formData = new FormData(document.getElementById("formuploadajax"));
 		$.ajax({
 			url: '/SIA/juridico/api/upload',
@@ -60,8 +66,38 @@ module.exports = class iracFunciones {
 			data: formData,
 			cache: false,
 			contentType: false,
-			processData: false
+			processData: false,
+			success:function(json) {
+				let res = JSON.parse(json)
+				if(res.errors){
+					self.get_errors(res)
+				} else { 
+					self.carga_documentos(res)
+				}
+			}
 		})
 		
 	}
+
+	carga_documentos(json){
+		let self = this
+		let promesa = co(function*(){
+			let datos = yield api.load_documentos_turnados(json.idVolante,json.idPuestoJuridico)
+			let tabla = self.construct_tables_documentos(datos,json.idVolante)
+			$('table#documentos tbody').html(tabla)
+			
+			
+		})
+	}
+
+		construct_tables_documentos(datos,id) {
+		let tr = ''
+		for(let x in datos) {
+			tr += `<tr><td>${datos[x].archivoFinal}</td><td>${datos[x].fAlta}</td><td>${datos[x].comentario}</td></tr>`
+		}
+		return tr
+	}
+
+	
+
 }

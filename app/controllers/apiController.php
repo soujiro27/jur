@@ -9,6 +9,10 @@ use App\Models\Volantes\VolantesDocumentos;
 use App\Models\Volantes\Remitentes;
 use App\Models\Catalogos\PuestosJuridico;
 use App\Models\Documentos\TurnadosJuridico;
+use App\Models\Documentos\AnexosJuridico;
+
+use Sirius\Validation\Validator;
+use Carbon\Carbon;
 
 class ApiController {
 
@@ -141,7 +145,7 @@ class ApiController {
 
 		$documentos = TurnadosJuridico::select('sia_TurnadosJuridico.idTurnadoJuridico',
 			'a.archivoOriginal', 'a.archivoFinal', 'a.idTipoArchivo', 'a.fAlta' ,'a.comentario',
-			'p.saludo','p.nombre', 'p.paterno','p.materno')
+			'p.idPuestoJuridico','p.saludo','p.nombre', 'p.paterno','p.materno')
 			->leftJoin('sia_AnexosJuridico as a','a.idTurnadoJuridico','=','sia_TurnadosJuridico.idTurnadoJuridico')
 			->join('sia_PuestosJuridico as p','p.idPuestoJuridico','=','sia_TurnadosJuridico.idUsrReceptor')
 			->where('sia_TurnadosJuridico.idUSrReceptor',"$idPuesto")
@@ -152,16 +156,104 @@ class ApiController {
 	}
 
 	public function upload_files($data,$file) {
-		
 		$directory ='jur/files/documentos/'.$data['idVolante'];
-		var_dump($file);
+		$nombre = $file['uploadFile']['name'];
+		$extension = explode('.',$nombre);
+
+
 		if(!file_exists($directory)){
 			mkdir($directory,0777,true);
-		} else {
-			move_uploaded_file($file['uploadFile']['tmp_name'],$directory.'/'.$file['uploadFile']['name']);
+		} 
+
+		if(empty($data['comentario'])){
+			$data['comentario'] = 'Sin Comentarios';
 		}
+
+		$valida_datos = $this->validate_datos_upload($data);
+		$valida_file = $this->validate_file($nombre, $file['uploadFile']['size']);
+	
+		$final = $this->create_name_file($extension[1]);
+
+
+
+		if(empty($valida_datos) && empty($valida_file)){
+
+			$anexo = new AnexosJuridico([
+				'idTurnadoJuridico' => $data['idTurnadoJuridico'],
+				'archivoOriginal' => $nombre,
+				'archivoFinal' => $final,
+				'idTipoArchivo' => $extension[1],
+				'comentario' => $data['comentario'],
+                'usrAlta' => $_SESSION['idUsuario'],
+                'estatus' => 'ACTIVO',
+                'fAlta' => Carbon::now('America/Mexico_City')->format('Y-d-m H:i:s')
+			]);
+
+			$anexo->save();
+			move_uploaded_file( $file['uploadFile']['tmp_name'],$directory.'/'.$final);
+			$res = array('idVolante' => $data['idVolante'] , 'idPuestoJuridico' => $data['idPuestoJuridico'] );
+
+		} else { 
+			$res = array_merge($valida_datos,$valida_file);
+		}
+		
+			echo json_encode($res);
 	
 		
 	
+	}
+
+	public function validate_datos_upload(array $data) {
+		$errors = [];
+		$validator = new \Sirius\Validation\Validator;
+		$validator->add(
+			array(
+				'idTurnadoJuridico' => 'required | Number' ,
+				'idVolante' => 'required | Number',
+				'comentario' => 'MaxLength(350)(Excede los caracteres permitidos)'
+			)
+		);
+
+		if(!$validator->validate($data)){
+			$errors = $validator->getMessages();
+		}
+
+		return $errors;
+	}
+
+	public function validate_file($name,$size) {
+		$errors = [];
+
+		if(strlen($name) > 50) {
+			$errors['errors'] = 'El nombre es demasiado Grande';
+		}
+
+		if($size > 8388608) {
+			$errors['errors'] = 'El tamaño del documento no debe de ser mayor a 10MB';
+		}
+
+		return $errors;
+
+	}
+
+	public function create_name_file($extension){
+		$hora = Carbon::now('America/Mexico_City')->format('H:i:s');
+		$fecha = Carbon::now('America/Mexico_City')->format('Y-d-m');
+		$array_hora  = explode(':',$hora);
+		$array_fecha = explode('-',$fecha);
+
+		$final ='';
+		foreach($array_fecha as $valor) { 
+			$final = $final . $valor . '_';
+		}
+
+	foreach($array_hora as $valor) { 
+			$final = $final . $valor . '_';
+		}		
+
+		$final = $final . '.'.$extension;
+		
+		return $final;
+		
 	}
 }

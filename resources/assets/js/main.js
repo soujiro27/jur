@@ -7,13 +7,14 @@ const base_Function = require('./base.js')
 const volantes = require('./volantes/volantes')
 const diversos = require('./volantes/volantesDiversos')
 const iracs = require('./documentos/irac')
-
+const turnos = require('./documentos/turnos')
 /*------- llamada a las funciones -----------------*/
 
 const base = new base_Function()
 const volante = new volantes()
 const diverso = new diversos()
 const irac = new iracs()
+const turno = new turnos()
 
 
 /*---------- Funciones ----------------------------*/
@@ -30,3 +31,5 @@ diverso.load_remitentes()
 
 irac.load_turnados()
 irac.load_documentos()
+
+turno.table()
