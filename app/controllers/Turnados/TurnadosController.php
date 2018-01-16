@@ -30,7 +30,7 @@ class TurnadosController extends Template {
             ->orderBy('fAlta','ASC')
             ->get();
 
-        	echo $this->render('/documentos/Irac_turnos/index.twig',[
+        	echo $this->render('/documentos/turnos/index.twig',[
             'turnos' => $turnos,
             'sesiones'=> $_SESSION,
             'modulo' => $this->modulo,
@@ -40,7 +40,7 @@ class TurnadosController extends Template {
 	public function create($id,$message, $errors) {
 		
         $turnos = $this->load_turnos($id);
-        echo $this->render('documentos/Irac/create.twig',[
+        echo $this->render('documentos/turnos/create.twig',[
 			'sesiones' => $_SESSION,
 			'modulo' => $this->modulo,
             'turnos' => $turnos,
