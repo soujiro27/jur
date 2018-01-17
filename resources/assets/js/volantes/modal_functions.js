@@ -16,7 +16,8 @@ module.exports = class modal_function {
 
 	load_datos_auditoria(cuenta){
 		let self = this
-		let digito = cuenta.substring(2)
+		//let digito = cuenta.substring(2)
+		let digito = '16'
 		$('input#numero-auditoria').keyup(function(event) {
 			let numero = $(this).val()
 			if(numero.length>0){

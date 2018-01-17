@@ -38873,7 +38873,8 @@ module.exports = function () {
 		key: 'load_datos_auditoria',
 		value: function load_datos_auditoria(cuenta) {
 			var self = this;
-			var digito = cuenta.substring(2);
+			//let digito = cuenta.substring(2)
+			var digito = '16';
 			$('input#numero-auditoria').keyup(function (event) {
 				var numero = $(this).val();
 				if (numero.length > 0) {
@@ -38975,7 +38976,7 @@ module.exports = function () {
 }();
 
 },{"./../api":1,"bluebird":169,"co":170,"jquery":174,"validator":177}],251:[function(require,module,exports){
-module.exports = '<div class="table-datos-auditoria">\n	<table id="datos-auditoria">\n		<thead>\n			<th>Sujeto</th>\n			<th>Rubro</th>\n			<th>Tipo</th>\n		</thead>\n		<tbody></tbody>\n	</table>\n</div>\n<div class="turnado-datos-auditoria">\n	<table id="turnados-auditoria">\n		<thead>\n			<th>Documento</th>\n			<th>Turnado</th>\n		</thead>\n		<tbody></tbody>\n	</table>\n</div>\n<div id="errors-auditoria"></div>\n';
+module.exports = '<input type="number" id="numero-auditoria">\n<div class="table-datos-auditoria">\n	<table id="datos-auditoria">\n		<thead>\n			<th>Sujeto</th>\n			<th>Rubro</th>\n			<th>Tipo</th>\n		</thead>\n		<tbody></tbody>\n	</table>\n</div>\n<div class="turnado-datos-auditoria">\n	<table id="turnados-auditoria">\n		<thead>\n			<th>Documento</th>\n			<th>Turnado</th>\n		</thead>\n		<tbody></tbody>\n	</table>\n</div>\n<div id="errors-auditoria"></div>\n';
 },{}],252:[function(require,module,exports){
 'use strict';
 
