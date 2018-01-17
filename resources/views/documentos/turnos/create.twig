@@ -2,14 +2,13 @@
 {% block title %}
   <div class="header-irac">
     <a  href="#!" class="active">Nueva Asignacion</a>
-    <a href="/SIA/juridico/turnos/documentos/{{ id }}">Anexar Documentos</a>
-    <a href="/SIA/juridico/turnos/documentos/send/{{ id }}">Historial</a>
+    <a href="/SIA/juridico/Irac/historial/{{ id }}">Respuestas</a>
   </div>
 {% endblock %}
 
 {% block form %}
 
-    <form id="create_turno"   data-ruta="turnos" method="POST">
+    <form id="create_turno"   data-ruta="turnos" method="POST" enctype="multipart/form-data">
       <input type="hidden" value="{{ id }}" id="idVolante" name="idVolante">
       <div class="form-group">
         <label>Enviar A: </label>
@@ -30,6 +29,20 @@
           <option value="NORMAL">Normal</option>
           <option value="URGENTE">Urgente</option>
         </select>
+      </div>
+
+      <div class="form-group">
+        <label>Tipo</label>
+        <select class="form-control" name="idTipoTurnado" required>
+          <option value="">Seleccione una Opcion</option>
+          <option value="NUEVO">Nuevo</option>
+          <option value="RESPUESTA">Respuesta</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Anexar Documento</label>
+        <input type="file" name="archivo">
       </div>
 
       <div class="form-group">

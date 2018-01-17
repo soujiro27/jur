@@ -18,13 +18,20 @@ class TurnadosController extends Template {
 	public function index() {
         
 		$idUsuario = $_SESSION['idUsuario'];
+       
+        $turnados_propios = TurnadosJuridico::select('idVolante')
+        ->where('idUsrReceptor',"$idUsuario")
+        ->get();
         
+        $volantes_repetidos = $this->array_turnados($turnados_propios);
+        $volantes = array_unique($volantes_repetidos);
+
 
         $turnos = TurnadosJuridico::select('sia_TurnadosJuridico.fAlta','sia_TurnadosJuridico.idTipoPrioridad','sia_TurnadosJuridico.comentario','sia_TurnadosJuridico.idTurnadoJuridico','sub.nombre as documento','u.nombre','u.saludo','u.paterno','u.materno','v.idVolante')
             ->join('sia_VolantesDocumentos as v','v.idVolante','=','sia_TurnadosJuridico.idVolante')
             ->join('sia_catSubTiposDocumentos as sub', 'sub.idSubTipoDocumento','=','v.idSubTipoDocumento')
             ->join('sia_usuarios as u','u.idUsuario','=','sia_TurnadosJuridico.usrAlta')
-            ->where('sia_TurnadosJuridico.idUsrReceptor',"$idUsuario")
+            ->where('v.idVolante',"2180")
             ->where('sia_TurnadosJuridico.estatus','ACTIVO')
             ->orderBy('fAlta','ASC')
             ->get();
@@ -34,7 +41,8 @@ class TurnadosController extends Template {
             'sesiones'=> $_SESSION,
             'modulo' => $this->modulo,
             ]);
-	}
+
+        }
 
 	public function create($id,$message, $errors) {
 		
@@ -59,5 +67,13 @@ class TurnadosController extends Template {
         return $anexos;
     }
 
+
+    public function array_turnados($data) {
+		$id = [];
+		foreach ($data as $key => $value) {
+			array_push($id,$data[$key]['idVolante']);
+		}
+		return $id;
+	}
 
 }
