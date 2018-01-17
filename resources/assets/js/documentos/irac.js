@@ -44,21 +44,20 @@ module.exports = class Irac {
 	load_documentos(){
 		let self = this
 		$('select#personal-turnado').change(function(){
-			let val = $(this).val()
+			let idPuestoJuridico = $(this).val()
 			let id = $(this).data('id')
-			if(!validator.isEmpty(val)) {
+			if(!validator.isEmpty(idPuestoJuridico)) {
 				let promesa = co(function*(){
-					let datos = yield api.load_documentos_turnados(id,val)
-					let tabla = self.construct_tables_documentos(datos,id)
+					let datos = yield api.load_documentos_turnados(id,idPuestoJuridico)
+					let tabla = self.construct_tables_documentos(datos)
 					$('form#irac').html(tabla)
-					self.upload_files()
+					
 				})
 			}
 		})
 	}
 
-	construct_tables_documentos(datos,id) {
-		let idUsuario = $('input#idUsuario').val() 
+	construct_tables_documentos(datos) {
 		let html = require('./table-documentos.html')
 		let tr = ''
 
@@ -66,48 +65,23 @@ module.exports = class Irac {
 			let usrAlta = parseInt(datos[x].usrAlta)
 			
 			tr += `<tr>
-					<td>${datos[x].archivoFinal}</td>
 					<td>${datos[x].fAlta}</td>
-					<td>${datos[x].comentario}</td>`
-			
-				
-			if(usrAlta == idUsuario) {
-				tr += `<td>
-							<i class="fa fa-arrow-down" aria-hidden="true" style="color:blue"></i>
-							Enviado
-					</td>`
-			} else {
-				tr += `<td>
-						<i class="fa fa-arrow-up" aria-hidden="true" style="color:red"></i>
-						Respuesta
-					</td>`
-			}
-			tr += `</tr>`
+					<td>${datos[x].idTipoPrioridad}</td>
+					<td>${datos[x].comentario}</td>
+					<td>${datos[x].idTipoTurnado}</td>
+					`
+					if(datos[x].archivoFinal == null){
+						tr += `<td>Sin Documentos</td>`
+					}else{
+						tr += `<td><a href="/SIA/jur/files/documentos/${datos[x].idVolante}/${datos[x].archivoFinal}">${datos[x].archivoFinal}</a></td>`
+					}
+					
+					tr += `</tr>`
 		}
 
-	
-		let nombre = datos[0].saludo + ' ' + datos[0].nombre + ' ' + datos[0].paterno + ' ' + datos[0].materno
-
-		let res = html.replace(':puesto:',datos[0].idPuestoJuridico)
-				.replace(':documentos:',tr)
-				.replace(':turnado:',datos[0].idTurnadoJuridico)
-				.replace(':volante:',id)
-
+		let res = html.replace(':documentos:',tr)
 		return res
 	}
 
-	upload_files(){
-		$('button#add_document').click(function(e){
-			e.preventDefault()
-			let id = $(this).data('id')
-			let volante = $(this).data('volante')
-			let puesto = $(this).data('puesto')
-			let html = require('./upload-form.html')
-			html = html.replace(':idTurnado:',id)
-					.replace(':idVolante:',volante)
-					.replace(':puesto:',puesto)
-			modal.upload_files(html,id)
-		})
-	}
 
 }

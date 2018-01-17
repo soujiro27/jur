@@ -214,4 +214,52 @@ class ApiController {
 		return $final;
 		
 	}
+
+	public function load_documentos_turnados(array $data) {
+		$idUsuario = $_SESSION['idUsuario'];
+		$idVolante = $data['idVolante'];
+		$idPuesto = $data['idPuesto'];
+
+		$puestos = PuestosJuridico::select('u.idUsuario')
+					->join('sia_usuarios as u','u.idEmpleado','=','sia_PuestosJuridico.rpe')
+					->where('sia_PuestosJuridico.idPuestoJuridico',"$idPuesto")
+					->get();
+		$idUsuario_envio = $puestos[0]['idUsuario'];
+		
+
+		$turnados_propios = TurnadosJuridico::select('idTurnadoJuridico')
+							->where('idVolante',"$idVolante")
+							->where('usrAlta',"$idUsuario")
+							->where('idUsrReceptor',"$idUsuario_envio")
+							->get();
+	
+		$turnados_recibidos = TurnadosJuridico::select('idTurnadoJuridico')
+							->where('idVolante',"$idVolante")
+							->where('usrAlta',"$idUsuario_envio")
+							->where('idUsrReceptor',"$idUsuario")
+							->get();
+
+		$propios = $this->array_turnados($turnados_propios);
+		$recibidos = $this->array_turnados($turnados_recibidos);
+
+		$res = array_merge($propios,$recibidos);
+
+
+		$turnados = TurnadosJuridico::select('sia_TurnadosJuridico.*','a.archivoFinal')
+					->leftJoin('sia_AnexosJuridico as a ','a.idTurnadoJuridico','=','sia_TurnadosJuridico.idTurnadoJuridico')
+					->whereIn('sia_TurnadosJuridico.idTurnadoJuridico',$res)
+					->orderBy('sia_TurnadosJuridico.fAlta','DESC')
+					->get();
+
+		echo json_encode($turnados);
+	}
+
+	public function array_turnados($data) {
+		$id = [];
+		foreach ($data as $key => $value) {
+			array_push($id,$data[$key]['idTurnadoJuridico']);
+		}
+		return $id;
+	}
+	
 }

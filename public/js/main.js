@@ -245,9 +245,9 @@ module.exports = function () {
 		value: function load_documentos() {
 			var self = this;
 			$('select#personal-turnado').change(function () {
-				var val = $(this).val();
+				var idPuestoJuridico = $(this).val();
 				var id = $(this).data('id');
-				if (!validator.isEmpty(val)) {
+				if (!validator.isEmpty(idPuestoJuridico)) {
 					var promesa = co( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
 						var datos, tabla;
 						return regeneratorRuntime.wrap(function _callee2$(_context2) {
@@ -255,16 +255,15 @@ module.exports = function () {
 								switch (_context2.prev = _context2.next) {
 									case 0:
 										_context2.next = 2;
-										return api.load_documentos_turnados(id, val);
+										return api.load_documentos_turnados(id, idPuestoJuridico);
 
 									case 2:
 										datos = _context2.sent;
-										tabla = self.construct_tables_documentos(datos, id);
+										tabla = self.construct_tables_documentos(datos);
 
 										$('form#irac').html(tabla);
-										self.upload_files();
 
-									case 6:
+									case 5:
 									case 'end':
 										return _context2.stop();
 								}
@@ -276,49 +275,32 @@ module.exports = function () {
 		}
 	}, {
 		key: 'construct_tables_documentos',
-		value: function construct_tables_documentos(datos, id) {
-			var idUsuario = $('input#idUsuario').val();
+		value: function construct_tables_documentos(datos) {
 			var html = require('./table-documentos.html');
 			var tr = '';
 
 			for (var x in datos) {
 				var usrAlta = parseInt(datos[x].usrAlta);
 
-				tr += '<tr>\n\t\t\t\t\t<td>' + datos[x].archivoFinal + '</td>\n\t\t\t\t\t<td>' + datos[x].fAlta + '</td>\n\t\t\t\t\t<td>' + datos[x].comentario + '</td>';
-
-				if (usrAlta == idUsuario) {
-					tr += '<td>\n\t\t\t\t\t\t\t<i class="fa fa-arrow-down" aria-hidden="true" style="color:blue"></i>\n\t\t\t\t\t\t\tEnviado\n\t\t\t\t\t</td>';
+				tr += '<tr>\n\t\t\t\t\t<td>' + datos[x].fAlta + '</td>\n\t\t\t\t\t<td>' + datos[x].idTipoPrioridad + '</td>\n\t\t\t\t\t<td>' + datos[x].comentario + '</td>\n\t\t\t\t\t<td>' + datos[x].idTipoTurnado + '</td>\n\t\t\t\t\t';
+				if (datos[x].archivoFinal == null) {
+					tr += '<td>Sin Documentos</td>';
 				} else {
-					tr += '<td>\n\t\t\t\t\t\t<i class="fa fa-arrow-up" aria-hidden="true" style="color:red"></i>\n\t\t\t\t\t\tRespuesta\n\t\t\t\t\t</td>';
+					tr += '<td><a href="/SIA/jur/files/documentos/' + datos[x].idVolante + '/' + datos[x].archivoFinal + '">' + datos[x].archivoFinal + '</a></td>';
 				}
+
 				tr += '</tr>';
 			}
 
-			var nombre = datos[0].saludo + ' ' + datos[0].nombre + ' ' + datos[0].paterno + ' ' + datos[0].materno;
-
-			var res = html.replace(':puesto:', datos[0].idPuestoJuridico).replace(':documentos:', tr).replace(':turnado:', datos[0].idTurnadoJuridico).replace(':volante:', id);
-
+			var res = html.replace(':documentos:', tr);
 			return res;
-		}
-	}, {
-		key: 'upload_files',
-		value: function upload_files() {
-			$('button#add_document').click(function (e) {
-				e.preventDefault();
-				var id = $(this).data('id');
-				var volante = $(this).data('volante');
-				var puesto = $(this).data('puesto');
-				var html = require('./upload-form.html');
-				html = html.replace(':idTurnado:', id).replace(':idVolante:', volante).replace(':puesto:', puesto);
-				modal.upload_files(html, id);
-			});
 		}
 	}]);
 
 	return Irac;
 }();
 
-},{"./../api":1,"./modal":4,"./table-documentos.html":6,"./table.html":7,"./upload-form.html":9,"bluebird":169,"co":170,"jquery":174,"jquery-confirm":171,"jquery-ui-browserify":173,"validator":177}],4:[function(require,module,exports){
+},{"./../api":1,"./modal":4,"./table-documentos.html":6,"./table.html":7,"bluebird":169,"co":170,"jquery":174,"jquery-confirm":171,"jquery-ui-browserify":173,"validator":177}],4:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -533,7 +515,7 @@ module.exports = function () {
 }();
 
 },{"./../api":1,"bluebird":169,"co":170,"jquery":174,"validator":177}],6:[function(require,module,exports){
-module.exports = '<div class="table-documentos">\n	<div class="datos-documentos">\n		\n		<button class="btn btn-primary" \n			id="add_document" \n			data-id=":turnado:" \n			data-volante=":volante:"\n			data-puesto=":puesto:">\n				Enviar Documento\n		</button>\n	</div>\n\n	<table class="table" id="documentos">\n		<thead>\n			<th>Documento</th>\n			<th>Fecha</th>\n			<th>Comentario</th>\n			<th>Tipo</th>\n		</thead>\n		<tbody>\n			:documentos:\n		</tbody>\n	</table>\n\n\n</div>';
+module.exports = '<div class="table-documentos">\n	<table class="table" id="documentos">\n		<thead>\n			<th>Fecha</th>\n			<th>Prioridad</th>\n			<th>Comentario</th>\n			<th>Estado</th>\n			<th>Documento</th>\n		</thead>\n		<tbody>\n			:documentos:\n		</tbody>\n	</table>\n\n\n</div>';
 },{}],7:[function(require,module,exports){
 module.exports = '<table class="table" id="table-personal">\n	<thead>\n		<th>Seleccionar</th>\n		<th>Nombre</th>\n		<th>Puesto</th>\n	</thead>\n	<tbody>\n		:tr:\n	</tbody>\n</table>\n<div id="observaciones" class="col-lg-11">\n	<textarea placeholder="Agregar una obervaciones" id="comentario"></textarea>\n	<select id="prioridad">\n		<option value="">Escoga una Opcion</option>\n		<option value="NORMAL">Normal</option>\n		<option value="URGENTE">Urgente</option>\n	</select>\n</div>';
 },{}],8:[function(require,module,exports){

@@ -2,8 +2,7 @@
 {% block title %}
   <div class="header-irac">
     <a  href="/SIA/juridico/Irac/{{ id }}">Nueva Asignacion</a>
-    <a href="#!" class="active">Anexar Documentos</a>
-    <a href="/SIA/juridico/Irac/historial/{{ id }}">Historial</a>
+    <a href="#!" class="active">Respuestas</a>
   </div>
 {% endblock %}
 
@@ -14,13 +13,12 @@
         {% for turno in turnados %}
         <option value="{{turno.idPuestoJuridico}}">{{turno.saludo}} {{turno.nombre}} {{turno.paterno}} {{turno.materno}}</option>
         {% endfor %}
-        <option value="0">TODO EL PERSONAL</option>
       </select>
 {% endblock %}
 
 
 {% block form %}
-    <input type="hidden" value="{{ sesiones.idUsuario}} " id="idUsuario">
+    
     <form id="irac"   data-ruta="Irac">
       
     </form>

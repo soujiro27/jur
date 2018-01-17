@@ -23,7 +23,7 @@ $app->group('/juridico',$auth,function() use($app,$controller){
 	})->conditions(array('id' => '[0-9]{1,4}'));
 
 
-	$app->get('/Irac/documentos/:id',function($id) use ($controller,$app){
+	$app->get('/Irac/historial/:id',function($id) use ($controller,$app){
 		$message = false;
 		$errors = false;
 		$controller->createDocumentos($id,$message, $errors);

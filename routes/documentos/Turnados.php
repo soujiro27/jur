@@ -12,7 +12,7 @@ $auth = function(){
 
 $app->group('/juridico',$auth,function() use($app,$controller){
 
-	$app->get('/Irac/turnos',function() use ($controller){
+	$app->get('/turnos',function() use ($controller){
 		$controller->index();
 	});
 

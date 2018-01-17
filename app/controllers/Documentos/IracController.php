@@ -61,7 +61,13 @@ class IracController extends Template {
             $size_file = $files['archivo']['size'];
             $id = $data['idVolante'];
             $area = $this->Area($id); 
-            
+            $idPuesto = $data['idUsrReceptor'];
+
+            $puestos = PuestosJuridico::select('u.idUsuario')
+					->join('sia_usuarios as u','u.idEmpleado','=','sia_PuestosJuridico.rpe')
+					->where('sia_PuestosJuridico.idPuestoJuridico',"$idPuesto")
+					->get();
+		    $idPuesto = $puestos[0]['idUsuario'];
 
 
             $errors = ApiController::validate_file($nombre_file,$size_file);
@@ -71,9 +77,9 @@ class IracController extends Template {
                         'idVolante' => $data['idVolante'],
                         'idAreaRemitente' => $area,
                         'idAreaRecepcion' => $area,
-                        'idUsrReceptor' => $data['idUsrReceptor'],
+                        'idUsrReceptor' => $idPuesto,
                         'idEstadoTurnado' => 'En Atencion',
-                        'idTipoTurnado' => 'Salida',
+                        'idTipoTurnado' => $data['idTipoTurnado'],
                         'idTipoPrioridad' =>$data['idTipoPrioridad'],
                         'comentario' => $data['comentario'],
                         'usrAlta' => $_SESSION['idUsuario'],
@@ -97,26 +103,12 @@ class IracController extends Template {
             }else{
                 $this->create($id,$message = false,$errors);
             }
-            /*
-           
-            
-
-            
-
-                
-                
-            } else {
-                $this->create($id,$message = false,$this->validate($data));
-            }
-            */
     }
 
 
 
     public function createDocumentos($id,$message, $errors) {
-
-        $turnados = TurnadosJuridico::select('p.idPuestoJuridico','p.saludo','p.nombre','p.paterno','p.materno','sia_TurnadosJuridico.idTurnadoJuridico')
-                                    ->join('sia_puestosJuridico as p','idPuestoJuridico','=','sia_TurnadosJuridico.idUsrReceptor')->get();
+        $turnados = $this->load_personal($id);
 
 
          echo $this->render('documentos/Irac/documentos.twig',[
