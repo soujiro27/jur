@@ -44,6 +44,19 @@ $app->group('/juridico',$auth,function() use($app,$controller){
 	});
 
 
+	$app->get('/datos/Sessions',function() use ($controller,$app){
+		 $datos = array(
+        "idUsuario"         => $_SESSION['idUsuario'],
+        "idCuentaActual"    => $_SESSION['idCuentaActual'],
+        "userName"          => $_SESSION['sUsuario'],
+        "cuenta"            => $_SESSION['sCuentaActual'],
+    );
+
+    echo json_encode($datos);
+
+	});
+
+
 });
 
 

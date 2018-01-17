@@ -56,7 +56,7 @@ class IracController extends Template {
 	}
 
     public function save_turnado(array $data,$files, $app) {
-
+        
             $nombre_file = $files['archivo']['name'];
             $size_file = $files['archivo']['size'];
             $id = $data['idVolante'];
@@ -68,7 +68,6 @@ class IracController extends Template {
 					->where('sia_PuestosJuridico.idPuestoJuridico',"$idPuesto")
 					->get();
 		    $idPuesto = $puestos[0]['idUsuario'];
-
 
             $errors = ApiController::validate_file($nombre_file,$size_file);
             if(empty($errors)){
@@ -91,6 +90,7 @@ class IracController extends Template {
                     $max = TurnadosJuridico::all()->max('idTurnadoJuridico');
 
                     if(ApiController::upload_files($id,$max,$files)){
+                        ApiController::notificaciones($idPuesto,$data['idVolante']);
                         $app->redirect('/SIA/juridico/Irac/'.$id);        
                     } else { 
                         $this->create($id,'Hubo un Error Intente de Nuevo',false);        
@@ -103,6 +103,7 @@ class IracController extends Template {
             }else{
                 $this->create($id,$message = false,$errors);
             }
+            
     }
 
 

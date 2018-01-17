@@ -4,12 +4,14 @@ use App\Models\Catalogos\SubTiposDocumentos;
 use App\Models\Api\Auditorias;
 use App\Models\Api\AuditoriasUnidades;
 use App\Models\Api\Unidades;
+use App\Models\Catalogos\PuestosJuridico;
+use App\Models\Documentos\AnexosJuridico;
+use App\Models\Documentos\TurnadosJuridico;
+use App\Models\Volantes\Remitentes;
 use App\Models\Volantes\Volantes;
 use App\Models\Volantes\VolantesDocumentos;
-use App\Models\Volantes\Remitentes;
-use App\Models\Catalogos\PuestosJuridico;
-use App\Models\Documentos\TurnadosJuridico;
-use App\Models\Documentos\AnexosJuridico;
+use App\Models\Volantes\Usuarios;
+use App\Models\Volantes\Notificaciones;
 
 use Sirius\Validation\Validator;
 use Carbon\Carbon;
@@ -260,6 +262,74 @@ class ApiController {
 			array_push($id,$data[$key]['idTurnadoJuridico']);
 		}
 		return $id;
+	}
+
+	public function notificaciones($idUsuario,$idVolante) {
+		$usuario[0] = $idUsuario;
+		$rpe = ApiController::get_rpe($idUsuario);
+		$reciben = ApiController::get_users_notificaciones($rpe);
+		
+		$all = array_merge($usuario,$reciben);
+
+		$mensaje = ApiController::mensaje($idVolante);
+		
+		foreach ($all as $key => $value) {
+			$notifica = new Notificaciones([
+				'idNotificacion' => '1',
+				'idUsuario' => $value,
+				'mensaje' => $mensaje,
+				'idPrioridad' => 'ALTA',
+				'idImpacto' => 'MEDIO',
+				'fLectura' => Carbon::now('America/Mexico_City')->format('Y-d-m H:i:s'),
+				'usrAlta' => $_SESSION['idUsuario'],
+				'fAlta' => Carbon::now('America/Mexico_City')->format('Y-d-m H:i:s'),
+				'estatus' => 'ACTIVO',
+				'situacion' => 'NUEVO',
+				'identificador' => '1',
+				'idCuenta' => 'CTA-2016',
+				'idAuditoria' => '1',
+				'idModulo' => 'Volantes',
+				'referencia' => 'idVolante'
+	 
+			]);
+			$notifica->save();
+		}	
+	}
+
+	public function get_users_notificaciones($rpe){
+		 $usuarios = PuestosJuridico::select('u.idUsuario')
+		 			->join('sia_usuarios as u','u.idEmpleado','=','sia_PuestosJuridico.rpe')
+            		->where('usrAsisteA',"$rpe")
+            		->get();
+        if($usuarios->isEmpty()){
+        	$res = [];
+        }else{
+
+        	$cont = 0;
+            foreach ($usuarios as $key => $value) {
+                $res[$cont] = $usuarios[$key]['idUsuario'];
+                $cont++;
+            }
+
+        }
+        return $res;
+	}
+
+	public function get_rpe($idUsuario) {
+		$usuarios = Usuarios::select('idEmpleado')->where('idUsuario',"$idUsuario")->get();
+		$rpe = $usuarios[0]['idEmpleado'];
+		return $rpe;
+	}
+
+	public function mensaje($idVolante) {
+		$datos = Volantes::select('sia_Volantes.folio','sub.nombre')
+				->join('sia_volantesDocumentos as vd','vd.idVolante','=','sia_Volantes.idVolante')
+				->join('sia_catSubTiposDocumentos as sub','sub.idSubTipoDocumento','=','vd.idSubTipoDocumento')
+				->where('sia_Volantes.idVolante',"$idVolante")
+				->get();
+
+		$mensaje = 'Tienes un nuevo turnado de un: '.$datos[0]['nombre'].' con el folio: '.$datos[0]['folio'];
+		return $mensaje;
 	}
 	
 }
