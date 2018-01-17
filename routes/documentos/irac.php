@@ -30,11 +30,11 @@ $app->group('/juridico',$auth,function() use($app,$controller){
 	})->conditions(array('id' => '[0-9]{1,4}'));
 
 	
-
-
-	$app->post('/Irac/turno',function() use($app,$controller) {
-		$controller->saveTurno($app->request->post(),$app);
+	$app->post('/Irac/:id',function($id) use ($controller,$app){
+		$controller->save_turnado($app->request->post(),$_FILES,$app);
 	});
+
+	
 });
 
 

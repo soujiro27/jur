@@ -1,8 +1,9 @@
 {% extends 'layoutForm.twig' %}
 {% block title %}
   <div class="header-irac">
-    <a  href="/SIA/juridico/Irac/{{id}}">Asignar</a>
-    <a href="#!" class="active">Documentos</a>
+    <a  href="/SIA/juridico/Irac/{{ id }}">Nueva Asignacion</a>
+    <a href="#!" class="active">Anexar Documentos</a>
+    <a href="/SIA/juridico/Irac/historial/{{ id }}">Historial</a>
   </div>
 {% endblock %}
 
@@ -19,6 +20,7 @@
 
 
 {% block form %}
+    <input type="hidden" value="{{ sesiones.idUsuario}} " id="idUsuario">
     <form id="irac"   data-ruta="Irac">
       
     </form>

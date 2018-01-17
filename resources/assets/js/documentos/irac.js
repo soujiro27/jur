@@ -58,10 +58,31 @@ module.exports = class Irac {
 	}
 
 	construct_tables_documentos(datos,id) {
+		let idUsuario = $('input#idUsuario').val() 
 		let html = require('./table-documentos.html')
 		let tr = ''
+
 		for(let x in datos) {
-			tr += `<tr><td>${datos[x].archivoFinal}</td><td>${datos[x].fAlta}</td><td>${datos[x].comentario}</td></tr>`
+			let usrAlta = parseInt(datos[x].usrAlta)
+			
+			tr += `<tr>
+					<td>${datos[x].archivoFinal}</td>
+					<td>${datos[x].fAlta}</td>
+					<td>${datos[x].comentario}</td>`
+			
+				
+			if(usrAlta == idUsuario) {
+				tr += `<td>
+							<i class="fa fa-arrow-down" aria-hidden="true" style="color:blue"></i>
+							Enviado
+					</td>`
+			} else {
+				tr += `<td>
+						<i class="fa fa-arrow-up" aria-hidden="true" style="color:red"></i>
+						Respuesta
+					</td>`
+			}
+			tr += `</tr>`
 		}
 
 	

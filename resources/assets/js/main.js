@@ -33,3 +33,4 @@ irac.load_turnados()
 irac.load_documentos()
 
 turno.table()
+turno.upload_files()

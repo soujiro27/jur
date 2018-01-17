@@ -277,10 +277,21 @@ module.exports = function () {
 	}, {
 		key: 'construct_tables_documentos',
 		value: function construct_tables_documentos(datos, id) {
+			var idUsuario = $('input#idUsuario').val();
 			var html = require('./table-documentos.html');
 			var tr = '';
+
 			for (var x in datos) {
-				tr += '<tr><td>' + datos[x].archivoFinal + '</td><td>' + datos[x].fAlta + '</td><td>' + datos[x].comentario + '</td></tr>';
+				var usrAlta = parseInt(datos[x].usrAlta);
+
+				tr += '<tr>\n\t\t\t\t\t<td>' + datos[x].archivoFinal + '</td>\n\t\t\t\t\t<td>' + datos[x].fAlta + '</td>\n\t\t\t\t\t<td>' + datos[x].comentario + '</td>';
+
+				if (usrAlta == idUsuario) {
+					tr += '<td>\n\t\t\t\t\t\t\t<i class="fa fa-arrow-down" aria-hidden="true" style="color:blue"></i>\n\t\t\t\t\t\t\tEnviado\n\t\t\t\t\t</td>';
+				} else {
+					tr += '<td>\n\t\t\t\t\t\t<i class="fa fa-arrow-up" aria-hidden="true" style="color:red"></i>\n\t\t\t\t\t\tRespuesta\n\t\t\t\t\t</td>';
+				}
+				tr += '</tr>';
 			}
 
 			var nombre = datos[0].saludo + ' ' + datos[0].nombre + ' ' + datos[0].paterno + ' ' + datos[0].materno;
@@ -522,7 +533,7 @@ module.exports = function () {
 }();
 
 },{"./../api":1,"bluebird":169,"co":170,"jquery":174,"validator":177}],6:[function(require,module,exports){
-module.exports = '<div class="table-documentos">\n	<div class="datos-documentos">\n		\n		<button class="btn btn-primary" \n			id="add_document" \n			data-id=":turnado:" \n			data-volante=":volante:"\n			data-puesto=":puesto:">\n				Enviar Documento\n		</button>\n	</div>\n\n	<table class="table" id="documentos">\n		<thead>\n			<th>Documento</th>\n			<th>Fecha</th>\n			<th>Comentario</th>\n		</thead>\n		<tbody>\n			:documentos:\n		</tbody>\n	</table>\n\n\n</div>';
+module.exports = '<div class="table-documentos">\n	<div class="datos-documentos">\n		\n		<button class="btn btn-primary" \n			id="add_document" \n			data-id=":turnado:" \n			data-volante=":volante:"\n			data-puesto=":puesto:">\n				Enviar Documento\n		</button>\n	</div>\n\n	<table class="table" id="documentos">\n		<thead>\n			<th>Documento</th>\n			<th>Fecha</th>\n			<th>Comentario</th>\n			<th>Tipo</th>\n		</thead>\n		<tbody>\n			:documentos:\n		</tbody>\n	</table>\n\n\n</div>';
 },{}],7:[function(require,module,exports){
 module.exports = '<table class="table" id="table-personal">\n	<thead>\n		<th>Seleccionar</th>\n		<th>Nombre</th>\n		<th>Puesto</th>\n	</thead>\n	<tbody>\n		:tr:\n	</tbody>\n</table>\n<div id="observaciones" class="col-lg-11">\n	<textarea placeholder="Agregar una obervaciones" id="comentario"></textarea>\n	<select id="prioridad">\n		<option value="">Escoga una Opcion</option>\n		<option value="NORMAL">Normal</option>\n		<option value="URGENTE">Urgente</option>\n	</select>\n</div>';
 },{}],8:[function(require,module,exports){
@@ -540,8 +551,10 @@ var Promise = require('bluebird');
 var validator = require('validator');
 
 var apis = require('./../api');
+var modals = require('./modal');
 
 var api = new apis();
+var modal = new modals();
 
 module.exports = function () {
 	function Turnos() {
@@ -556,12 +569,25 @@ module.exports = function () {
 				location.href = '/SIA/juridico/turnos/' + id;
 			});
 		}
+	}, {
+		key: 'upload_files',
+		value: function upload_files() {
+			$('button#add_document').click(function (e) {
+				e.preventDefault();
+				var id = $(this).data('id');
+				var volante = $(this).data('volante');
+				var puesto = $(this).data('puesto');
+				var html = require('./upload-form.html');
+				html = html.replace(':idTurnado:', id).replace(':idVolante:', volante).replace(':puesto:', puesto);
+				modal.upload_files(html, id);
+			});
+		}
 	}]);
 
 	return Turnos;
 }();
 
-},{"./../api":1,"bluebird":169,"co":170,"jquery":174,"jquery-confirm":171,"jquery-ui-browserify":173,"validator":177}],9:[function(require,module,exports){
+},{"./../api":1,"./modal":4,"./upload-form.html":9,"bluebird":169,"co":170,"jquery":174,"jquery-confirm":171,"jquery-ui-browserify":173,"validator":177}],9:[function(require,module,exports){
 module.exports = '<div class="upload-container">\n<form enctype="multipart/form-data" id="formuploadajax" method="post">\n	<div class="form-group">\n		<label>Arhivo a Enviar</label>\n		<input type="file" name="uploadFile" id="uploadFile" class="form-control">\n		<input type="hidden" name="idTurnadoJuridico" value=":idTurnado:">\n		<input type="hidden" name="idVolante" value=":idVolante:">\n		<input type="hidden" name="idPuestoJuridico" value=":puesto:">\n	</div>\n	<div class="form-group">\n		<label>Comentario</label>\n		<textarea placeholder="Añadir Comentario" id="coment-file" name="comentario"></textarea>\n	</div>\n</form>\n</div>';
 },{}],10:[function(require,module,exports){
 'use strict';
@@ -600,6 +626,7 @@ irac.load_turnados();
 irac.load_documentos();
 
 turno.table();
+turno.upload_files();
 
 },{"./base.js":2,"./documentos/irac":3,"./documentos/turnos":8,"./volantes/volantes":252,"./volantes/volantesDiversos":253,"babelify-es6-polyfill":167,"jquery":174}],11:[function(require,module,exports){
 module.exports = function(it){
